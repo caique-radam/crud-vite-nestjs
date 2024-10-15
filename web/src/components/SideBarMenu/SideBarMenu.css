@@ -1,0 +1,7 @@
+.sidebar {
+  margin: 0;
+  display: flex;
+  flex-direction: column; /* Stacks items vertically */
+  width: 12.5rem; /* Consider changing this to a percentage for responsiveness */
+  justify-content: flex-start; /* Align items at the start */
+}
