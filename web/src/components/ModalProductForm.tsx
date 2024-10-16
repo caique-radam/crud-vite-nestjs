@@ -14,8 +14,8 @@ interface props {
 }       
 
 export default function ModalProductForm({isOpen, onHide, productToEdit}: props) {
-  const productService = new ProductService();
-  const options = ['yes', 'no'];
+  const productService = new ProductService(); // Instância a classe de serviços
+  const options = ['Yes', 'No'];
 
   const [formValues, setFormValues] = useState({
     code: '',
@@ -23,44 +23,54 @@ export default function ModalProductForm({isOpen, onHide, productToEdit}: props)
   });
   const [isActive, setIsActive] = useState<string>(options[0]);
   
+  
+
   // Se um produto for passado, preenche o formulário para edição
   useEffect(() => {
     if (productToEdit) {
       setFormValues({
         code: productToEdit.code,
-        name: productToEdit.name
+        name: productToEdit.name,
       });
+      setIsActive(productToEdit.is_active === 'Y'? 'Yes':'No')
+      
     } else {
       // Limpa o formulário para criação de um novo produto
       setFormValues({
         code: '',
         name: ''
       });
+      setIsActive('Yes'); // Limpa o campo de ativo
     }
-  }, [productToEdit]);
+  }, [productToEdit, isOpen]);
   
-  // Se o obj "productToEdit" === null. Cria-se um produto novo
   const handleSave = () => {
-    if (productToEdit) {
-      const editProduct: ProductInterface = {
-        id: productToEdit.id,
-        code: formValues.code,
-        name: formValues.name,
-        created_at: productToEdit.created_at
-      }
-      productService.editProduct(editProduct);
+    // Verifica se os campos obrigatórios estão preenchidos
+    if (!formValues.code || !formValues.name || !isActive) {
+      console.error('Todos os campos devem ser preenchidos.');
+      return;
+    }
 
-      console.log('Editando produto:', formValues);
+    if (productToEdit) {
+      const editedProduct = {
+        ...productToEdit, // Mantém o ID e create_at
+        code: formValues.code,
+        name: formValues.name,  
+        is_active: isActive === 'Yes'? 'Y':'N'
+      };
+      productService.editProduct(editedProduct);
+
     } else {
       const newProduct: ProductInterface = {
         code: formValues.code,
         name: formValues.name,
-        //is_active: isActive
+        is_active: isActive === 'Yes'? 'Y':'N'
       };
       productService.createNewProduct(newProduct);
 
       console.log('Criando novo produto:', formValues);
     }
+
     onHide(); // Fecha a modal após salvar
   }
 
@@ -75,7 +85,9 @@ export default function ModalProductForm({isOpen, onHide, productToEdit}: props)
           <label htmlFor="Name Field">Product Name</label>
           <InputText name='Name Field' value={formValues.name} onChange={e => setFormValues({ ...formValues, name: e.target.value })} placeholder='Name' className='w-full'/>
         </div>
-        <SelectButton value={isActive} onChange={(e) => setIsActive(e.value)} options={options} className='mt-3'/>
+        <div className='card w-full'>
+          <SelectButton value={isActive} onChange={(e) => setIsActive(e.value)} options={options} className='mt-3'/>
+        </div>
         <div className='card flex justify-content-center mt-3'>
           <Button label={productToEdit ? 'Save Changes' : 'Create Product'} onClick={handleSave}/>
         </div>

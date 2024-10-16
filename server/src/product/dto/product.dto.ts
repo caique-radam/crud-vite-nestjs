@@ -3,4 +3,5 @@ export class ProductDto {
   code: string;
   name: string;
   created_at: string;
+  is_active: string;
 }

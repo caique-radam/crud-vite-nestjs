@@ -3,4 +3,5 @@ export interface ProductInterface {
   code: string;
   name: string;
   created_at?: Date;
+  is_active: string;
 }

@@ -54,7 +54,7 @@ export default function ProductTable() {
     {field: 'code', header: 'Code'},
     {field: 'name', header: 'Name'},
     {field: 'created_at', header: 'Created At'},
-    {field: 'status', header: 'Status'},
+    {field: 'is_active', header: 'Active'},
   ];
 
   return (
@@ -63,6 +63,7 @@ export default function ProductTable() {
         {columns.map((col, i) => (
         <Column key={col.field} field={col.field} header={col.header} />
         ))}
+        {/* Coluna com as ações de edit e delete */}
         <Column header="Actions" body={(rowData) => (
           <div className="flex space-x-2 gap-2">
           <Button icon="pi pi-pencil" onClick={
@@ -72,7 +73,7 @@ export default function ProductTable() {
           </div>
         )} />
       </DataTable>
-      {/* Exibe a modal, reutilizando tanto para criar quanto para editar produtos */}
+      {/* Modal para criar ou editar produto */}
       <ModalProductForm
         isOpen={modalIsVisible}
         onHide={() => setModalIsVisible(false)}

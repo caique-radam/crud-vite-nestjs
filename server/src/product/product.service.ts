@@ -29,6 +29,7 @@ export class ProductService {
     await this.productRepository.update(product.id, {
       code: product.code,
       name: product.name,
+      is_active: product.is_active,
     });
   }
 
