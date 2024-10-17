@@ -1,3 +1,4 @@
+import { PrimeReactProvider } from 'primereact/api';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
 import SideBarMenu from './components/SideBarMenu/SideBarMenu';
@@ -7,7 +8,8 @@ import Products from './pages/Products/Products';
 
 export default function App() {
   return (
-  <Router>
+  <PrimeReactProvider>
+        <Router>
     <TopBarMenu />
       <div className='w-full h-screen inline-flex'>
         <SideBarMenu />
@@ -19,5 +21,7 @@ export default function App() {
         </div>
       </div>  
   </Router>
+  </PrimeReactProvider>
+  
  );
 }

@@ -11,6 +11,7 @@ export default function SideBarMenu() {
     },
     {
       label: 'Products',
+      icon: 'pi pi-book',
       url: '/products'
     },
   ];

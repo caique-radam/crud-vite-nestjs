@@ -9,7 +9,7 @@ import { ProductService } from '../pages/Products/Products.service';
 
 interface props {
   isOpen: boolean;
-  onHide: () => void;
+  onHide: (product?: ProductInterface | null) => void;
   productToEdit: ProductInterface | null;
 }       
 
@@ -44,35 +44,42 @@ export default function ModalProductForm({isOpen, onHide, productToEdit}: props)
     }
   }, [productToEdit, isOpen]);
   
-  const handleSave = () => {
+  const handleSave = async () => {
     // Verifica se os campos obrigatórios estão preenchidos
     if (!formValues.code || !formValues.name || !isActive) {
       console.error('Todos os campos devem ser preenchidos.');
       return;
     }
-
-    if (productToEdit) {
-      const editedProduct = {
-        ...productToEdit, // Mantém o ID e create_at
-        code: formValues.code,
-        name: formValues.name,  
-        is_active: isActive === 'Yes'? 'Y':'N'
-      };
-      productService.editProduct(editedProduct);
-
-    } else {
-      const newProduct: ProductInterface = {
-        code: formValues.code,
-        name: formValues.name,
-        is_active: isActive === 'Yes'? 'Y':'N'
-      };
-      productService.createNewProduct(newProduct);
-
-      console.log('Criando novo produto:', formValues);
+  
+    let savedProduct: ProductInterface | null = null; // Variável que será retornada para o componente pai
+  
+    try {
+      if (productToEdit) {
+        const editedProduct = {
+          ...productToEdit, // Mantém o ID e created_at
+          code: formValues.code,
+          name: formValues.name,
+          is_active: isActive === 'Yes' ? 'Y' : 'N'
+        };
+        await productService.editProduct(editedProduct); // Espera a edição
+        savedProduct = editedProduct; // Atribui o produto editado
+      } else {
+        const newProduct: ProductInterface = {
+          code: formValues.code,
+          name: formValues.name,
+          is_active: isActive === 'Yes' ? 'Y' : 'N'
+        };
+        await productService.createNewProduct(newProduct); // Espera a criação
+        // Nenhum produto é retornado no caso de novo produto, pois a listagem será atualizada separadamente
+      }
+  
+      onHide(savedProduct); // Retorna o produto editado ou null (para novos produtos) ao componente pai
+    } catch (error) {
+      console.error('Erro ao salvar o produto:', error);
     }
-
-    onHide(); // Fecha a modal após salvar
-  }
+  };
+  
+  
 
   return (
     <Dialog header={productToEdit ? 'Edit Product' : 'New Product'} visible={isOpen} onHide={onHide} style={{ width: '50vw' }} >

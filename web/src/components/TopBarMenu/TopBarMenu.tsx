@@ -11,7 +11,7 @@ export default function TopBarMenu() {
   const end = (<Avatar image="https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png" shape="circle" />);
 
     return (
-      <div className="card mb-2">
+      <div className="w-full mb-2">
         <Toolbar start={start} center={center} end={end} className=" shadow-2" />
       </div>
     )
